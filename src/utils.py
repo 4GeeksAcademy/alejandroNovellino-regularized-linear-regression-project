@@ -1,21 +1,12 @@
 import os
 from typing import TypedDict, NotRequired, Tuple
-from dotenv import load_dotenv  # type: ignore
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-
 # load the .env file variables
 load_dotenv()
-
-# constants for file paths
-# path to save the processed data
-X_TRAIN_PATH: str = "../data/processed/x_train.csv"
-X_TEST_PATH: str = "../data/processed/x_test.csv"
-
-Y_TRAIN_PATH: str = "../data/processed/y_train.csv"
-Y_TEST_PATH: str = "../data/processed/y_test.csv"
 
 
 def db_connect() -> None:
@@ -23,7 +14,7 @@ def db_connect() -> None:
     Connects to the database using sqlalchemy
     """
 
-    engine = create_engine(os.getenv("DATABASE_URL"))  # type: ignore
+    engine = create_engine(os.getenv("DATABASE_URL"))
     engine.connect()
 
     return
@@ -33,6 +24,7 @@ class DataLoadingError(Exception):
     """Custom exception raised when data loading fails."""
 
 
+# noinspection SpellCheckingInspection
 class ReadCsvParams(TypedDict):
     """
     Class for setting the parameters for reading a CSV file.
@@ -58,10 +50,10 @@ class SaveCsvParams(TypedDict):
 
 
 def load_data(
-    file_path: str,
-    url: str,
-    read_csv_params: ReadCsvParams,
-    save_csv_params: SaveCsvParams,
+        file_path: str,
+        url: str,
+        read_csv_params: ReadCsvParams,
+        save_csv_params: SaveCsvParams,
 ) -> pd.DataFrame:
     """
     Loads data from a file if it exists, otherwise from a URL.
@@ -69,6 +61,8 @@ def load_data(
     Args:
         file_path (str): The path to the file.
         url (str): The URL to load data from if the file doesn't exist.
+        read_csv_params (ReadCsvParams): The parameters for reading the CSV file.
+        save_csv_params (SaveCsvParams): The parameters for saving the CSV file.
 
     Returns:
         pandas.DataFrame: The loaded DataFrame.
@@ -79,20 +73,20 @@ def load_data(
     Examples:
         Data not saved before in local .csv file:
 
-        >>> from utils import load_data
-        >>> file_path = '../data/raw/AB_NYC_2019.csv'
-        >>> url = 'https://raw.githubusercontent.com/4GeeksAcademy/data-preprocessing-project-tutorial/main/AB_NYC_2019.csv'
-        >>> df = load_data(file_path=file_path, url=url)
+        > from utils import load_data
+        > file_path = '../data/raw/AB_NYC_2019.csv'
+        > url = 'https://raw.githubusercontent.com/data.csv'
+        > df = load_data(file_path=file_path, url=url)
 
-        File not found. Loading data from URL: https://raw.githubusercontent.com/4GeeksAcademy/data-preprocessing-project-tutorial/main/AB_NYC_2019.csv
+        File not found. Loading data from URL: https://raw.githubusercontent.com/data.csv
         Data saved to file: ../data/raw/AB_NYC_2019.csv
 
         Data have been saved before in local .csv file:
 
-        >>> from utils import load_data
-        >>> file_path = '../data/raw/AB_NYC_2019.csv'
-        >>> url = 'https://raw.githubusercontent.com/4GeeksAcademy/data-preprocessing-project-tutorial/main/AB_NYC_2019.csv'
-        >>> df = load_data(file_path=file_path, url=url)
+        > from utils import load_data
+        > file_path = '../data/raw/AB_NYC_2019.csv'
+        > url = 'https://raw.githubusercontent.com/data.csv'
+        > df = load_data(file_path=file_path, url=url)
 
         Loading data from file: ../data/raw/AB_NYC_2019.csv
     """
@@ -129,25 +123,28 @@ def load_data(
 
 
 def split_my_data(
-    X: pd.DataFrame, y: pd.Series, test_size: float, random_state: int
+        x: pd.DataFrame,
+        y: pd.Series,
+        test_size: float,
+        random_state: int
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """
     Wrapper for the sklearn tran_test function to have strict typing
     Splits data into training and testing sets with strict type hints.
 
     Args:
-        X: The features (input data). Can be a Pandas DataFrame or a NumPy array.
-        y: The target (output data). Can be a Pandas Series or a NumPy array.
-        test_size: The proportion of the dataset to include in the test split.
-        random_state: Controls the shuffling applied to the data before splitting.
+        x (DataFrame): The features (input data). Can be a Pandas DataFrame or a NumPy array.
+        y (Series): The target (output data). Can be a Pandas Series or a NumPy array.
+        test_size (float): The proportion of the dataset to include in the test split.
+        random_state (int): Controls the shuffling applied to the data before splitting.
 
     Returns:
         A tuple containing X_train, X_test, y_train, and y_test.
 
     """
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=test_size, random_state=random_state
     )
 
-    return X_train, X_test, y_train, y_test
+    return x_train, x_test, y_train, y_test

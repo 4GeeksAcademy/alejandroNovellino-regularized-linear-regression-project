@@ -45,7 +45,7 @@ def draw_corr_matrix(corr: pd.DataFrame, ) -> None:
     mask = np.triu(np.ones_like(corr, dtype=bool))
 
     # set up the matplotlib figure
-    plt.subplots(figsize=(11, 9))
+    plt.subplots(figsize=(15, 15))
 
     # generate a custom diverging colormap
     cmap = sns.diverging_palette(230, 20, as_cmap=True)
